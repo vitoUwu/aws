@@ -82,6 +82,17 @@ export function generateWeeklyReport(): WeeklyReport[] {
   return reports;
 }
 
+export function getTodayData(): Data[] {
+  const dataKey = getTodayKey();
+  const todayData = JSON.parse(
+    Object.entries({ ...window.localStorage })
+      .filter(([key]) => key === dataKey)
+      .map(([_, value]) => value)[0] ?? "[]"
+  ) as Data[];
+
+  return todayData;
+}
+
 export function saveQuestionResult(question: Data) {
   const key = getTodayKey();
   const results = localStorage.getItem(key) ?? "[]";

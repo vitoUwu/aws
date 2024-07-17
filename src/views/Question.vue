@@ -5,6 +5,7 @@ import Button from "../components/Button.vue";
 import Header from "../components/Header.vue";
 import Modal from "../components/Modal.vue";
 import Option from "../components/Option.vue";
+import { pushQuestionIdToHistory, saveQuestionResult } from "../lib/analytics.ts";
 import { getRandomQuestionURL, questions } from "../lib/questions.ts";
 
 const route = useRoute();
@@ -35,24 +36,11 @@ function handleSubmit() {
     result.value = "wrong";
   }
 
-  const today = new Date();
-  const pad = (num: number) => num.toString().padStart(2, "0");
-  const key = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(
-    today.getDate()
-  )}`;
-  const data = localStorage.getItem(key);
-  const entry = {
+  saveQuestionResult({
     question: question.question,
     isCorrect: result.value === "correct",
-  };
-
-  if (data) {
-    const parsedData = JSON.parse(data);
-    parsedData.push(entry);
-    localStorage.setItem(key, JSON.stringify(parsedData));
-  } else {
-    localStorage.setItem(key, JSON.stringify([entry]));
-  }
+  });
+  pushQuestionIdToHistory(questionId);
 }
 
 function handleOptionClick(option: string) {

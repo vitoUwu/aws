@@ -1,3 +1,5 @@
+import { getHistory } from "./analytics";
+
 export const questions: Question[] = [
   {
     question:
@@ -3673,7 +3675,7 @@ export function getRandomQuestionURL(questionId?: number) {
     return `/${index}`;
   }
 
-  if (index === questionId) {
+  if (index === questionId || getHistory().includes(index)) {
     return getRandomQuestionURL(questionId);
   }
 

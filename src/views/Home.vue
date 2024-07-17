@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from "vue";
+// import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Button from "../components/Button.vue";
+import Card from "../components/Card.vue";
 import AWS from "../components/icons/AWS.vue";
 import Spinner from "../components/icons/Spinner.vue";
-import { generateWeeklyReport, type WeeklyReport } from "../lib/analytics";
+import {
+  generateWeeklyReport,
+  getHistory,
+  getTodayData,
+  // type WeeklyReport,
+} from "../lib/analytics";
 import { getRandomQuestionURL, questions } from "../lib/questions";
 
 const router = useRouter();
@@ -19,17 +25,21 @@ const weekDays: Record<number, string> = {
   6: "Sáb",
 };
 
-const reports = ref<WeeklyReport[] | null>(null);
-const todayReport = computed(() => reports.value?.[0]);
+const history = getHistory();
+const todayData = getTodayData();
+const reports = generateWeeklyReport();
+const todayReport = reports[0];
+// const reports = ref<WeeklyReport[] | null>(null);
+// const todayReport = computed(() => reports.value?.[0]);
 
-onMounted(() => {
-  reports.value = generateWeeklyReport();
-});
+// onMounted(() => {
+//   reports.value = generateWeeklyReport();
+// });
 </script>
 
 <template>
   <main class="flex flex-col items-center justify-center w-full gap-2 p-2">
-    <div class="flex flex-col items-center gap-3 p-6 rounded-lg bg-slate-800">
+    <Card class="items-center">
       <AWS width="64" height="64" />
       <h1 class="flex items-center justify-center gap-3 text-3xl font-bold">
         AWS Quiz
@@ -41,10 +51,8 @@ onMounted(() => {
       <Button @click.prevent="router.replace({ path: getRandomQuestionURL() })">
         Modo Zen
       </Button>
-    </div>
-    <div
-      class="flex flex-col items-center w-full gap-3 p-6 rounded-lg bg-slate-800"
-    >
+    </Card>
+    <Card class="items-center w-full">
       <template v-if="reports && todayReport">
         <h2 class="text-2xl font-bold">Relatório</h2>
         <div
@@ -92,6 +100,35 @@ onMounted(() => {
       <template v-else>
         <Spinner width="64" height="64" />
       </template>
-    </div>
+    </Card>
+    <Card class="items-center w-full">
+      <h2 class="text-2xl font-bold">Histórico</h2>
+      <p
+        v-if="todayData.length > 0 && history.length > 0"
+        class="flex items-center gap-10 text-sm font-medium text-center sm:text-lg text-slate-400"
+      >
+        Últimas 10 questões:
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <RouterLink
+          v-if="todayData.length > 0 && history.length > 0"
+          v-for="[index, data] of todayData
+            .slice(-history.length, todayData.length)
+            .reverse()
+            .entries()"
+          :to="`/${history[index]}`"
+          :key="data.question + index"
+        >
+          <Button>
+            <span class="line-clamp-2">
+              {{ data.isCorrect ? "✅" : "❌" }} {{ data.question }}
+            </span>
+          </Button>
+        </RouterLink>
+        <p v-else class="text-lg font-medium text-slate-400">
+          Nenhuma questão encontrada.
+        </p>
+      </div>
+    </Card>
   </main>
 </template>

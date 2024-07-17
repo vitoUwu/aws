@@ -108,9 +108,9 @@ function handleOptionClick(option: string) {
     </div>
   </Modal>
   <Header class="p-2">
-    <Button variant="muted">
-      <RouterLink to="/"> Voltar ao inicio </RouterLink>
-    </Button>
+    <RouterLink to="/">
+      <Button variant="muted"> Voltar ao inicio </Button>
+    </RouterLink>
   </Header>
   <div
     v-if="question"

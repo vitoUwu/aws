@@ -5,7 +5,10 @@ import Button from "../components/Button.vue";
 import Header from "../components/Header.vue";
 import Modal from "../components/Modal.vue";
 import Option from "../components/Option.vue";
-import { pushQuestionIdToHistory, saveQuestionResult } from "../lib/analytics.ts";
+import {
+  pushQuestionIdToHistory,
+  saveQuestionResult,
+} from "../lib/analytics.ts";
 import { getRandomQuestionURL, questions } from "../lib/questions.ts";
 
 const route = useRoute();
@@ -94,7 +97,7 @@ function handleOptionClick(option: string) {
           </li>
         </ul>
       </div>
-      <p class="w-full p-4 min-w-96 max-h-[75dvh] overflow-y-auto">
+      <p class="w-full p-4 min-w-96">
         {{ question.explanation }}
       </p>
       <div class="flex justify-center pb-4 mx-auto mt-5">

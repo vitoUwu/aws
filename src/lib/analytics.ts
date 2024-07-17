@@ -46,26 +46,36 @@ export interface WeeklyReport extends Report {
   date: Date;
 }
 
+function getDateKey(date: Date): string {
+  const pad = (num: number) => num.toString().padStart(2, "0");
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+
+  return `${year}-${month}-${day}`;
+}
+
+function getTodayKey(): string {
+  return getDateKey(new Date());
+}
+
 export function generateWeeklyReport(): WeeklyReport[] {
   const storage = Object.entries({ ...window.localStorage });
   const date = new Date();
   const reports: (Report & { date: Date })[] = [];
   for (let i = 0; i < 7; i++) {
     const today = new Date(date.getTime() - i * 24 * 60 * 60 * 1000);
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const todayData = JSON.parse(
+    const dateKey = getDateKey(today);
+    const data = JSON.parse(
       storage
-        .filter(
-          ([key]) =>
-            key ===
-            `2024-${month}-${today.getDate().toString().padStart(2, "0")}`
-        )
+        .filter(([key]) => key === dateKey)
         .map(([_, value]) => value)[0] ?? "[]"
     ) as Data[];
 
     reports.push({
       date: today,
-      ...generateReport(todayData),
+      ...generateReport(data),
     });
   }
 
@@ -73,11 +83,7 @@ export function generateWeeklyReport(): WeeklyReport[] {
 }
 
 export function saveQuestionResult(question: Data) {
-  const today = new Date();
-  const pad = (num: number) => num.toString().padStart(2, "0");
-  const key = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(
-    today.getDate()
-  )}`;
+  const key = getTodayKey();
   const results = localStorage.getItem(key) ?? "[]";
 
   try {

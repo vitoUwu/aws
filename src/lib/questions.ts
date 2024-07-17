@@ -3671,11 +3671,7 @@ export const questions: Question[] = [
 export function getRandomQuestionURL(questionId?: number) {
   const index = Math.floor(Math.random() * questions.length);
 
-  if (!questionId) {
-    return `/${index}`;
-  }
-
-  if (index === questionId || getHistory().includes(index)) {
+  if ((questionId && index === questionId) || getHistory().includes(index)) {
     return getRandomQuestionURL(questionId);
   }
 

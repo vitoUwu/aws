@@ -21,7 +21,7 @@ defineEmits(["onClose"]);
     :data-open="open"
     role="dialog"
     v-bind="$attrs"
-    class="fixed max-w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-10 p-4 opacity-0 pointer-events-none transition-all data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto"
+    class="fixed max-w-full left-1/2 max-h-full -translate-x-1/2 top-1/2 -translate-y-1/2 z-10 p-4 opacity-0 pointer-events-none transition-all data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto overflow-y-auto"
   >
     <slot />
   </div>
